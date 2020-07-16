@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
 
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 const db = require('./config/keys').MongoURI;
@@ -18,7 +19,7 @@ mongoose
 
   const PORT = process.env.PORT || 8000;
 
-
+app.use('/image', express.static('./uploads'));
 app.use('/',route);
 
 app.listen(PORT, () => {

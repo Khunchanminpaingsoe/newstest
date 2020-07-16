@@ -17,12 +17,9 @@
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  
-  "engines":{
+  "engines": {
     "node": "12.16.2"
   },
-  
   "author": "",
   "license": "ISC"
 }
-
