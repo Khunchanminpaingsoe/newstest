@@ -16,13 +16,13 @@
             <tr>
                 <td><%= data.catname %></td>
                 <td><%= data.title %></td>
-                <td><img class="responsive-img" src="uploads/<%= data.image %>" width="150px" height="100px"></td>
+                <td><img class="responsive-img" src="/<%= data.image %>" width="150px" height="100px"></td>
                 <td><%= data.content %></td>
                 <td>
-                    <a href="/update/<%= data._id %>" class="btn btn-outline-primary"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
+                    <a href="/news/update/<%= data._id %>" class="btn btn-outline-primary"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
                 </td>
                 <td>
-                    <a href="/delete/<%= data._id %>" class="btn btn-outline-danger" onclick="return confirm('Are you sure to delete this record ?');"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
+                    <a href="/news/delete/<%= data._id %>" class="btn btn-outline-danger" onclick="return confirm('Are you sure to delete this record ?');"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
                 </td>
             </tr>
         <% }); %>        

@@ -1,90 +1,77 @@
 const express = require('express');
-//const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const formidable = require('formidable');
-const detect = require('detect-file-type');
 const {v1: uuidv1} = require('uuid');
 const router = express.Router();
 const mv = require('mv');
 
-/*const storage = multer.diskStorage({
-    destination : (req,file,cb)=>{
-        cb (null, './uploads/');
-    },
-    filename : (req,file,cb)=>{
-        cb(null, file.fieldname + '_' + Date.now() +  path.extname(file.originalname));
-    }
-  });
-  
-const upload = multer({storage: storage, limits: 1000000, fileFilter: (req, file, cb)=>{ checkFileType(file, cb);}});
-function checkFileType(file, cb){
 
-    const filetypes = /jpg|jpeg|png|gif/;
-
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-
-    const mimetype = filetypes.test(file.mimetype);
-
-    if(mimetype && extname){
-        return cb(null, true);
-    }else{
-        cb('Error: Image Only');
-    }
-}*/
 const newsModel = require('../models/news_model');
+const catsModel = require('../models/categories_model');
+const relatedModel = require('../models/related_news');
 
 router.get('/', (req, res) => { 
     res.render('create');
 });
 
-router.get('/createget', (req, res) => {
-    
-    /*const data = {
-        catname: req.params.catname,
-        title: req.params.title,
-        image: "uploads/" + req.params.image,
-        content: req.params.content
 
-    }*/
-    newsModel.find({})
-    .then((data) => {
-       res.render('view_all', {
-            datas: data
-                    //});
-    })
-    .catch(err => console.log(err));
-    });
-});
-
-router.get('/news/:catname', (req, res) => {
-    newsModel.findOne({ catname: req.params.catname })
+router.get('/news/createget', (req, res) => {
+    newsModel.find({}).populate('catname','name')
     .then((data) => {
         res.send(data);
+       //res.render('view_all', {
+         //   datas: data
+        })
+    .catch(err => console.log(err));
+    });
+    
+
+router.get('/news/createget/:id', (req, res) => {
+    catsModel.findById({ _id: req.params.id }).populate('news_detail')
+    .then((data) => {
+        res.send(data.news_detail);
     })
     .catch(err => console.log(err));
     });
 
-    //router.post('/createpost', upload.single('image'), (req, res) =>
-router.post('/createpost',(req,res)=>{
-    let form = new formidable.IncomingForm();
-    form.parse(req,(err,fields,files)=>{
-        var oldpath = files.image.path;
-        console.log(oldpath);
-       
-        var newpath = 'uploads/'+new Date().toISOString()+files.image.name;
-       mv(oldpath, newpath, function(err) {
-            if(err){
-                console.log(err)
-            }
-            else{
-                console.log('newpath')
-            }
-          });
-    })
 
-})
-router.get('/update/:id', (req, res) => {
+router.post('/news/createpost/:id', async (req, res) => {
+        let {id} = req.params;
+        let form = new formidable.IncomingForm();
+        form.parse(req,async (err,fields,files)=>{
+            const newPath = 'uploads/' + uuidv1() + files.image.name;
+           mv(files.image.path,newPath,async(err)=>{
+               if(err){
+                   console.log(err);
+               }else{
+                const bodys = {
+                    
+                    title: fields.title,
+                    image: newPath,
+                    content: fields.content }
+    
+                    const news = new newsModel(bodys);
+                    const catid = await catsModel.findById(id);
+                    news.catname = catid;
+                    await news.save();
+                    if(Array.isArray(catid.news_detail)){
+                    catid.news_detail.push(news);
+                    //catid.related_news.push(news);
+                    await catid.save()
+                    .then((data) => {
+                        res.send(data);
+                    })
+                    .catch(err => console.log(err));
+                    }                
+                    //res.send(news);
+               }
+           });
+        });
+    });
+
+   
+router.get('/news/update/:id', (req, res) => {
     newsModel.findById({_id: req.params.id})
     .then((data) => {
         res.render('update', {
@@ -93,21 +80,89 @@ router.get('/update/:id', (req, res) => {
     }); 
 });
 
-router.put('/update/:id', (req, res) => {
-    newsModel.findByIdAndUpdate({_id: req.params.id}, req.body)
+
+router.patch('/news/update/:id', (req, res) => {
+    newsModel.findByIdAndUpdate({_id: req.params.id}, {$set: req.body})
     .then((data) => {
+        console.log(data);
         res.send(data);
         //res.redirect('/createget');
     })
     .catch(err => console.log(err));  
 });
 
-router.get('/delete/:id', (req, res) => {
+
+router.delete('/news/delete/:id', (req, res) => {
     newsModel.findByIdAndRemove({_id: req.params.id})
-    .then(() => {
-        res.redirect('back');
+    .then((data) => {
+        res.send(data);
     })
-    .catch(err => console.log(err));  
+    .catch(err => console.log(err));
+});
+
+
+//About Categories
+
+router.get('/cats/createget',(req, res) => {
+     catsModel.find({}).populate('news_detail')
+    .then((data) => {
+        res.send(data);
+    })
+    .catch(err => console.log(err));
+})
+
+
+router.get('/cats/createget/:id', (req, res) => {
+    const catid = catsModel.findById({ _id: req.params.id }).populate('news_detail');
+    catid
+    .then((data) => {
+        res.send(data.news_detail);
+    })
+    .catch(err => console.log(err));
+    });;
+
+
+router.post('/cats/createpost', (req, res) => {
+    const cat = new catsModel(req.body);
+    cat.save()
+    .then((data) => {
+        res.send(data);
+    })
+    .catch(err => console.log(err));
+});
+
+
+router.post('/cats/createpost/:id', async (req, res) => {
+    let {id} = req.params;
+    let form = new formidable.IncomingForm();
+    form.maxFieldsSize = 2 * 1024 ;
+    form.parse(req,async (err,fields,files)=>{
+        const newPath = 'uploads/' + uuidv1() + files.image.name;
+       mv(files.image.path,newPath,async(err)=>{
+           if(err){
+               console.log(err);
+           }else{
+            const bodys = {
+                
+                title: fields.title,
+                image: newPath,
+                content: fields.content }
+
+                const news = new newsModel(bodys);
+                const catid = await catsModel.findById(id);
+                news.catname = catid;
+                await news.save();
+                if(Array.isArray(catid.news_detail)){
+                catid.news_detail.push(news);
+                await catid.save()
+                .then((data) => {
+                    res.send(data);
+                })
+                .catch(err => console.log(err));
+                }                
+           }
+       });
+    });
 });
 
 

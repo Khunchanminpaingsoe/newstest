@@ -6,10 +6,12 @@ const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const { render } = require('ejs');
 const app = express();
-const cors = require('cors')
-app.use(bodyParser.urlencoded({extended:false}));
+const cors = require('cors');
+
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cors());
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin',"*");
   res.header('Access-Control-Allow-Headers','Origin,X-Requested-With,Content-Type,Authorization');
@@ -36,13 +38,10 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
-  const PORT = process.env.PORT || 8500;
-
-  
+const PORT = process.env.PORT || 8000;
 
 app.use('/',route);
-//app.use('/layout',require('./routes/layout'));
 
 app.listen(PORT, () => {
-    console.log('Server is running at port 8500');
+    console.log('Server is running at port 8000');
 })

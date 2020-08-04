@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-const newsSchema = new mongoose.Schema ({
+const relatedSchema = new mongoose.Schema ({
     catname:{
        type: mongoose.Schema.Types.ObjectId,
        required: true,
-        ref: 'categories'
+       ref: 'news'
     },
     title:{
         type: String,
@@ -25,5 +25,5 @@ const newsSchema = new mongoose.Schema ({
     
 })
 
-const news = mongoose.model('news', newsSchema);
-module.exports = news;
+const relatednews = mongoose.model('relatednews', relatedSchema);
+module.exports = relatednews;
