@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 })
 
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname));
+app.use('/uploads/',express.static('uploads'));
 app.use(expressLayouts);
 
 app.use(methodOverride('_method'));

@@ -71,18 +71,18 @@ router.post('/news/createpost/:id', async (req, res) => {
     });
 
    
-router.get('/news/update/:id', (req, res) => {
+/*router.get('/news/update/:id', (req, res) => {
     newsModel.findById({_id: req.params.id})
     .then((data) => {
         res.render('update', {
             data: data
         });
     }); 
-});
+});*/
 
 
-router.patch('/news/update/:id', (req, res) => {
-    newsModel.findByIdAndUpdate({_id: req.params.id}, {$set: req.body})
+router.put('/news/update/:id', (req, res) => {
+    newsModel.findByIdAndUpdate({_id: req.params.id})
     .then((data) => {
         console.log(data);
         res.send(data);
