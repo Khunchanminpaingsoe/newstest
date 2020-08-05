@@ -104,7 +104,7 @@ router.delete('/news/delete/:id', (req, res) => {
 //About Categories
 
 router.get('/cats/createget',(req, res) => {
-     catsModel.find({}).sort({"name": 1})
+     catsModel.find({}).sort({"name": 1}).populate('news_detail')
     .then((data) => {
         res.send(data);
        /* res.render('catscreate',{
