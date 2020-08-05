@@ -19,8 +19,8 @@ const newsSchema = new mongoose.Schema ({
         required: true
     },
     time:{ 
-        type: Number, 
-        default: (new Date()).getTime() 
+        type: Date,
+        default: Date.now
     }
     
 })

@@ -12,12 +12,12 @@ const catsModel = require('../models/categories_model');
 const relatedModel = require('../models/related_news');
 
 router.get('/', (req, res) => { 
-    res.render('create');
+    res.render('catscreate');
 });
 
 
 router.get('/news/createget', (req, res) => {
-    newsModel.find({}).populate('catname','name')
+    newsModel.find({}).sort({"title": 1}).populate('catname','name')
     .then((data) => {
         res.send(data);
        //res.render('view_all', {
@@ -82,7 +82,7 @@ router.post('/news/createpost/:id', async (req, res) => {
 
 
 router.put('/news/update/:id', (req, res) => {
-    newsModel.findByIdAndUpdate({_id: req.params.id})
+    newsModel.findByIdAndUpdate({_id: req.params.id}, req.body)
     .then((data) => {
         console.log(data);
         res.send(data);
@@ -104,12 +104,16 @@ router.delete('/news/delete/:id', (req, res) => {
 //About Categories
 
 router.get('/cats/createget',(req, res) => {
-     catsModel.find({}).populate('news_detail')
+     catsModel.find({}).sort({"name": 1})
     .then((data) => {
         res.send(data);
+       /* res.render('catscreate',{
+            datas: data
+        });*/
+        
     })
     .catch(err => console.log(err));
-})
+});
 
 
 router.get('/cats/createget/:id', (req, res) => {
@@ -126,7 +130,10 @@ router.post('/cats/createpost', (req, res) => {
     const cat = new catsModel(req.body);
     cat.save()
     .then((data) => {
+        console.log(data);
         res.send(data);
+        //res.redirect("back");
+
     })
     .catch(err => console.log(err));
 });
@@ -165,5 +172,23 @@ router.post('/cats/createpost/:id', async (req, res) => {
     });
 });
 
+router.put('/cats/update/:id', (req, res) => {
+    catsModel.findByIdAndUpdate({_id: req.params.id},req.body)
+    .then((data) => {
+        console.log(data);
+        res.send(data);
+        //res.redirect('/createget');
+    })
+    .catch(err => console.log(err));  
+});
+
+
+router.delete('/cats/delete/:id', (req, res) => {
+    catsModel.findByIdAndRemove({_id: req.params.id})
+    .then((data) => {
+        res.send(data);
+    })
+    .catch(err => console.log(err));
+});
 
 module.exports = router;
