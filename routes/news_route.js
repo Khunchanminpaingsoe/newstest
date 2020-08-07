@@ -63,6 +63,7 @@ router.get('/news/createpost/:id', (req, res) => {
     //res.render('newscreate');
         catsModel.findById({_id: req.params.id}, req.body)
         .then((data) => {
+        
             res.render('newscreate',{
                 datas: data
             });
@@ -140,6 +141,7 @@ router.delete('/news/delete/:id', (req, res) => {
 router.get('/getcatgories',(req, res) => {
      catsModel.find({}).sort({"name": 1}).populate('news_detail')
     .then((data) => {
+        res.send(data);
        res.render('catscreate', { datas: data });
     })
     .catch(err => console.log(err));
