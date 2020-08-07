@@ -38,10 +38,10 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 9000;
 
 app.use('/',route);
 
 app.listen(PORT, () => {
-    console.log('Server is running at port 8000');
+    console.log('Server is running at port 9000');
 })

@@ -1,5 +1,5 @@
 <div class="container col-md-6 offset-md-3">
-<form action="/news/createpost" method="POST" enctype="multipart/form-data"> 
+<form action="/news/createpost/<%= datas._id %>" method="POST" enctype="multipart/form-data"> 
 
     <div class="form-group">
         <label for="title">Title</label>
@@ -13,6 +13,22 @@
         <label for="content">Content</label>
         <textarea class="form-control" id="content" name="content" rows="3" placeholder="content"></textarea>
     </div> 
+    <!--<div class="form-group">
+        <label for="catname">Catname</label>
+        <input type="text" class="form-control" id="catname" name="catname" value="<%= datas._id %>">
+    </div>-->
+    <div>
+        <label>Catname</label>
+        <select name="catname">
+        <% datas.forEach(cat => { %>
+          <% if (cat._id === news.catname) { %>
+            <option selected label="<%= cat.name %>" value="<%= cat.id %>">
+          <% } else { %>
+            <option label="<%= cat.name %>" value="<%= cat.id %>">
+          <% } %>
+        <% }) %>
+        </select>
+      </div>
     <div class="form-group">
         <button type="submit" class="btn btn-success"><i class="fa fa-database"></i> Submit</button>
         <a class="btn btn-info" href="/news/createget"><i class="fa fa-list-alt"></i> View All</a>

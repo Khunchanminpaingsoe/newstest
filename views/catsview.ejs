@@ -1,0 +1,24 @@
+<div class="container col-md-6">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Category Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% datas.forEach((data) => { %>
+                <tr>
+                    <td><%= data.name %></td>
+                    <td>
+                        <a href="/cats/catsnews/<%= data._id %>" class="btn btn-outline-info"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>
+                
+                        <a href="/cats/update/<%= data._id %>" class="btn btn-outline-primary"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
+                
+                        <a href="/cats/delete/<%= data._id %>" class="btn btn-outline-danger" onclick="return confirm('Are you sure to delete this record ?');"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+            <% }); %>        
+        </tbody>
+    </table>
+    </div>

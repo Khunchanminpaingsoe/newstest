@@ -1,6 +1,6 @@
-<div class="container-fluid">
-<div class="container col-md-6 offset-md-3">
-    <form action="/cats/createpost" method="POST"> 
+
+<div class="container col-md-6">
+    <form action="/createcategories" method="POST" class="form-horizontal"> 
     
         <div class="form-group">
             <label for="name">Name</label>
@@ -9,17 +9,17 @@
 
         <div class="form-group">
             <button type="submit" class="btn btn-success"><i class="fa fa-database"></i> Submit</button>
-        </div> 
-            
+        </div>       
     </form>
 </div>
-<div class="container-fluid">
-    <table class="table">
+<br>
+<br>
+<br>
+<div class="container col-md-4 card">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Category Name</th>
-                <th></th>
-                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -27,18 +27,15 @@
             <% datas.forEach((data) => { %>
                 <tr>
                     <td><%= data.name %></td>
-                    <td>
-                        <a href="#" class="btn btn-outline-info"><i class="fa fa-plus fa-lg" aria-hidden="true"></a>
-                    </td>
-                    <td>
-                        <a href="/news/update/<%= data._id %>" class="btn btn-outline-primary"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
-                    </td>
-                    <td>
-                        <a href="/news/delete/<%= data._id %>" class="btn btn-outline-danger" onclick="return confirm('Are you sure to delete this record ?');"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
+                    <td class="text-right">
+                        <a href="/news/createpost/<%= data._id %>" class="btn btn-outline-info"><i class="fa fa-plus fa-sm " aria-hidden="true"></i></a>
+                
+                        <a href="/cats/update/<%= data._id %>" class="btn btn-outline-primary"><i class="fa fa-pencil fa-sm " aria-hidden="true"></i></a>
+                
+                        <a href="/cats/delete/<%= data._id %>" class="btn btn-outline-danger" onclick="return confirm('Are you sure to delete this record ?');"><i class="fa fa-trash fa-sm " aria-hidden="true"></i></a>
                     </td>
                 </tr>
             <% }); %>        
         </tbody>
     </table>
     </div>
-</div>

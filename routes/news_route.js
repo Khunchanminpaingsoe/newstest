@@ -9,32 +9,66 @@ const mv = require('mv');
 
 const newsModel = require('../models/news_model');
 const catsModel = require('../models/categories_model');
-const relatedModel = require('../models/related_news');
 
-router.get('/', (req, res) => { 
+/*router.get('/', (req, res) => { 
     res.render('catscreate');
-});
+});*/
+
+
 
 
 router.get('/news/createget', (req, res) => {
     newsModel.find({}).sort({"title": 1}).populate('catname','name')
     .then((data) => {
         res.send(data);
-       //res.render('view_all', {
-         //   datas: data
+       /*res.render('news_view', {
+            news: data
+            });*/
         })
     .catch(err => console.log(err));
     });
+
+
+router.get('/getnews', async (req, res) => {
+    const cat = await catsModel.find({})
+    const news = new newsModel()
+    res.render('newscreate', {
+        datas: cat,
+        news: news
+    })
+    
+
+})
     
 
 router.get('/news/createget/:id', (req, res) => {
-    catsModel.findById({ _id: req.params.id }).populate('news_detail')
+    newsModel.findById({ _id: req.params.id }).populate('catname')
     .then((data) => {
-        res.send(data.news_detail);
+        newsModel.find({}).populate('catname')
+        .then((all_data) => {
+            let related_news = all_data.filter(item => {
+                return item._id.toString() !== data._id.toString() && item.catname.name == data.catname.name;
+            });
+            res.send({news:data, relatedNews:related_news});
+            //console.log(related_news);
+            //res.send(data,related_news);
+            //res.send(related_news);
+        })
     })
     .catch(err => console.log(err));
     });
 
+
+router.get('/news/createpost/:id', (req, res) => {
+    //res.render('newscreate');
+        catsModel.findById({_id: req.params.id}, req.body)
+        .then((data) => {
+            res.render('newscreate',{
+                datas: data
+            });
+        })
+        .catch(err => console.log(err));
+    })
 
 router.post('/news/createpost/:id', async (req, res) => {
         let {id} = req.params;
@@ -59,8 +93,8 @@ router.post('/news/createpost/:id', async (req, res) => {
                     catid.news_detail.push(news);
                     //catid.related_news.push(news);
                     await catid.save()
-                    .then((data) => {
-                        res.send(data);
+                    .then(() => {
+                        res.render('/news/createget');
                     })
                     .catch(err => console.log(err));
                     }                
@@ -103,14 +137,10 @@ router.delete('/news/delete/:id', (req, res) => {
 
 //About Categories
 
-router.get('/cats/createget',(req, res) => {
+router.get('/getcatgories',(req, res) => {
      catsModel.find({}).sort({"name": 1}).populate('news_detail')
     .then((data) => {
-        res.send(data);
-       /* res.render('catscreate',{
-            datas: data
-        });*/
-        
+       res.render('catscreate', { datas: data });
     })
     .catch(err => console.log(err));
 });
@@ -126,20 +156,21 @@ router.get('/cats/createget/:id', (req, res) => {
     });;
 
 
-router.post('/cats/createpost', (req, res) => {
+router.post('/createcategories', (req, res) => {
     const cat = new catsModel(req.body);
     cat.save()
     .then((data) => {
         console.log(data);
-        res.send(data);
-        //res.redirect("back");
+        //res.send(data);
+        res.redirect("/getcatgories");
 
     })
     .catch(err => console.log(err));
 });
 
 
-router.post('/cats/createpost/:id', async (req, res) => {
+router.post('/cats/createcatsnews/:id', async (req, res) => {
+    
     let {id} = req.params;
     let form = new formidable.IncomingForm();
     form.maxFieldsSize = 2 * 1024 ;
@@ -172,21 +203,33 @@ router.post('/cats/createpost/:id', async (req, res) => {
     });
 });
 
-router.put('/cats/update/:id', (req, res) => {
-    catsModel.findByIdAndUpdate({_id: req.params.id},req.body)
+router.get('/cats/update/:id', (req, res) => {
+    catsModel.findById({_id: req.params.id}, req.body)
     .then((data) => {
-        console.log(data);
-        res.send(data);
-        //res.redirect('/createget');
+        //console.log(data);
+        res.render('catsupdate', {
+            cats: data
+        });
     })
     .catch(err => console.log(err));  
 });
 
 
-router.delete('/cats/delete/:id', (req, res) => {
-    catsModel.findByIdAndRemove({_id: req.params.id})
+router.post('/cats/update/:id', (req, res) => {
+    catsModel.findByIdAndUpdate({_id: req.params.id}, req.body)
     .then((data) => {
-        res.send(data);
+        console.log(data);
+        //res.send(data);
+        res.redirect('/getcatgories');
+    })
+    .catch(err => console.log(err));  
+});
+
+
+router.get('/cats/delete/:id', (req, res) => {
+    catsModel.findByIdAndRemove({_id: req.params.id})
+    .then(() => {
+        res.redirect('/getcatgories');
     })
     .catch(err => console.log(err));
 });
