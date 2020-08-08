@@ -35,10 +35,8 @@ router.get('/getnews', async (req, res) => {
     res.render('newscreate', {
         datas: cat,
         news: news
-    })
-    
-
-})
+     });
+    });
     
 
 router.get('/news/createget/:id', (req, res) => {
@@ -71,12 +69,13 @@ router.get('/news/createpost/:id', (req, res) => {
         .catch(err => console.log(err));
     })
 
-router.post('/news/createpost/:id', async (req, res) => {
+router.post('/news/createpost', async (req, res) => {
         let {id} = req.params;
         let form = new formidable.IncomingForm();
         form.parse(req,async (err,fields,files)=>{
             const newPath = 'uploads/' + uuidv1() + files.image.name;
            mv(files.image.path,newPath,async(err)=>{
+
                if(err){
                    console.log(err);
                }else{
@@ -94,8 +93,9 @@ router.post('/news/createpost/:id', async (req, res) => {
                     catid.news_detail.push(news);
                     //catid.related_news.push(news);
                     await catid.save()
-                    .then(() => {
-                        res.render('/news/createget');
+                    .then((data) => {
+                        res.send(data);
+                        //res.render('/news/createget');
                     })
                     .catch(err => console.log(err));
                     }                
