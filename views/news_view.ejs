@@ -1,0 +1,26 @@
+<div class="container col-md-4 card">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Image</th>
+                <th>Content</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% news.forEach((data) => { %>
+                <tr>
+                    <td><%= data.name %></td>
+                    <td class="text-right">
+                        <a href="/news/createpost/<%= data._id %>" class="btn btn-outline-info"><i class="fa fa-plus fa-sm " aria-hidden="true"></i></a>
+                
+                        <a href="/cats/update/<%= data._id %>" class="btn btn-outline-primary"><i class="fa fa-pencil fa-sm " aria-hidden="true"></i></a>
+                
+                        <a href="/cats/delete/<%= data._id %>" class="btn btn-outline-danger" onclick="return confirm('Are you sure to delete this record ?');"><i class="fa fa-trash fa-sm " aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+            <% }); %>        
+        </tbody>
+    </table>
+    </div>

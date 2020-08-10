@@ -1,5 +1,5 @@
 <div class="container-fluid">
-<h3><a class="btn btn-outline-success" href="/"><i class="fa fa-plus"></i> Create News</a> </h3>
+<h3><a class="btn btn-success" href="/getnews"><i class="fa fa-plus"></i> Create News</a> </h3>
 <table class="table">
     <thead>
         <tr>
@@ -9,20 +9,24 @@
             <th>Content</th>
             <th></th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        <% datas.forEach((data) => { %>
+        <% news.forEach((data) => { %>
             <tr>
                 <td><%= data.catname %></td>
-                <td><%= data.title %></td>
+                <td><%= data.title.slice(0,25) %></td>
                 <td><img class="responsive-img" src="/<%= data.image %>" width="150px" height="100px"></td>
-                <td><%= data.content %></td>
+                <td><%= data.content.slice(0,100) %></td>
                 <td>
-                    <a href="/news/update/<%= data._id %>" class="btn btn-outline-primary"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
+                    <a href="/readme/<%= data._id %>" class="btn btn-success"><i class="fa fa-readme fa-sm text-white" aria-hidden="true"></i></a>
                 </td>
                 <td>
-                    <a href="/news/delete/<%= data._id %>" class="btn btn-outline-danger" onclick="return confirm('Are you sure to delete this record ?');"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
+                    <a href="/news/update/<%= data._id %>" class="btn btn-primary"><i class="fa fa-pencil fa-sm" aria-hidden="true"></i></a>
+                </td>
+                <td>
+                    <a href="/news/delete/<%= data._id %>" class="btn btn-danger" onclick="return confirm('Are you sure to delete this record ?');"><i class="fa fa-trash fa-sm" aria-hidden="true"></i></a>
                 </td>
             </tr>
         <% }); %>        
