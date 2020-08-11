@@ -1,4 +1,4 @@
-<div class="container col-md-6 card">
+<div class="container col-md-6 card mt-5">
     <form action="/cats/update/<%= cats._id %>" method="POST" class="form-horizontal"> 
     
         <div class="form-group">
@@ -8,6 +8,7 @@
 
         <div class="form-group">
             <button type="submit" class="btn btn-success"><i class="fa fa-database"></i>Update</button>
+            <a href="/home/cats/getcatgories" class="btn btn-dark">Back</a>
         </div>       
     </form>
 </div>

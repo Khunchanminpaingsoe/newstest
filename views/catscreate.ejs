@@ -1,22 +1,38 @@
-
-<div class="container col-md-6">
-    <form action="/createcategories" method="POST" class="form-horizontal"> 
-    
+<%- include ('header.ejs') %>
+<div class="container">
+    <div class="modal fade" id="addcategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+    <form action="/home/createcategories" method="POST" class="form-control"> 
+    <div class="modal-body">
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="Enter category name..." >
+            <input type="text" id="name" name="name" placeholder="Enter category name..." >
         </div>
-
-        <div class="form-group">
+    </div> 
+        <div class="modal-footer">
             <button type="submit" class="btn btn-success"><i class="fa fa-database"></i> Submit</button>
-        </div>       
+        </div> 
     </form>
+</div>
+</div>
+</div>
 </div>
 <br>
 <br>
-<br>
+
 <div class="container col-md-4 card">
-    <table class="table table-striped">
+    <br>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addcategory">
+        Add Category 
+    </button>
+    <table class="table">
         <thead>
             <tr>
                 <th>Category Name</th>
@@ -28,12 +44,13 @@
                 <tr>
                     <td><%= data.name %></td>
                     <td class="text-right">                
-                        <a href="/cats/update/<%= data._id %>" class="btn btn-primary"><i class="fa fa-pencil fa-sm " aria-hidden="true"></i></a>
+                        <a href="/home/cats/update/<%= data._id %>" class="btn btn-primary">Edit</a>
                 
-                        <a href="/cats/delete/<%= data._id %>" class="btn btn-danger" onclick="return confirm('Are you sure to delete this record ?');"><i class="fa fa-trash fa-sm " aria-hidden="true"></i></a>
+                        <a href="/home/cats/delete/<%= data._id %>" class="btn btn-danger" onclick="return confirm('Are you sure to delete this record ?');">Delete</a>
                     </td>
                 </tr>
             <% }); %>        
         </tbody>
     </table>
     </div>
+    

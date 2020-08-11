@@ -5,20 +5,14 @@ const formidable = require('formidable');
 const {v1: uuidv1} = require('uuid');
 const router = express.Router();
 const mv = require('mv');
-
+const { ensureAuthenticated } = require('../config/auth');
 
 const newsModel = require('../models/news_model');
 const catsModel = require('../models/categories_model');
 
-/*router.get('/', (req, res) => { 
-    res.render('catscreate');
-});*/
-
-
-
 
 router.get('/news/createget', (req, res) => {
-    newsModel.find({}).sort({"title": 1}).populate('catname','name')
+    newsModel.find({}).sort({"time": -1}).populate('catname','name')
     .then((data) => {
         res.send(data);
        /*res.render('news_view', {
@@ -31,13 +25,13 @@ router.get('/news/createget', (req, res) => {
 
 router.get('/getnews', async (req, res) => {
     const cat = await catsModel.find({})
-    //res.send(cat);
     const news = new newsModel()
     res.render('newscreate', {
         datas: cat,
         news: news
      });
     });
+
     
 router.get('/news/createget/:id', async(req, res) => {
     await newsModel.findById({ _id: req.params.id }).populate('catname')
@@ -48,16 +42,13 @@ router.get('/news/createget/:id', async(req, res) => {
                 return item._id.toString() !== data._id.toString()//&& item.catname.name == data.catname.name;
             });
             res.send({news:data, relatedNews:related_news});
-            //console.log(related_news);
-            //res.send(data,related_news);
-            //res.send(related_news);
         })
     })
     .catch(err => console.log(err));
     });
 
 
-    router.get('/news', (req, res) => {
+router.get('/news', (req, res) => {
         newsModel.find({}).sort({"title": 1}).populate('catname','name')
         .then((data) => {
            res.render('view_all', {
@@ -68,7 +59,7 @@ router.get('/news/createget/:id', async(req, res) => {
         });
 
 
-    router.get('/readme/:id', (req, res) => {
+router.get('/readme/:id', (req, res) => {
         newsModel.findById({_id:req.params.id}).populate('catname','name')
         .then((data) => {
             res.render('readme', {
@@ -80,7 +71,7 @@ router.get('/news/createget/:id', async(req, res) => {
     });
 
 
-router.get('/news/createpost/:id', (req, res) => {
+/*router.get('/news/createpost/:id', (req, res) => {
         catsModel.findById({_id: req.params.id}, req.body)
         .then((data) => {
         
@@ -89,7 +80,7 @@ router.get('/news/createpost/:id', (req, res) => {
             });
         })
         .catch(err => console.log(err));
-    })
+    })*/
 
 router.post('/news/createpost', async (req, res) => {
         let form = new formidable.IncomingForm();
@@ -115,7 +106,7 @@ router.post('/news/createpost', async (req, res) => {
                     catid.news_detail.push(news);
                     await catid.save()
                     .then((data) => {
-                        res.redirect('/news');
+                        res.redirect('/home/news');
                     })
                     .catch(err => console.log(err));
                     }               
@@ -144,15 +135,13 @@ router.post('/news/update/:id', (req, res) => {
                    console.log(err);
                }else{
                 const bodys = {
-                    
                     title: fields.title,
                     image: newPath,
                     content: fields.content,
-                    catname: req.params.catname 
+                    catname: fields.catname 
                 }
                 newsModel.findByIdAndUpdate( id, bodys)
                 .then((data) => {
-                //console.log(data);
                 res.redirect('/news');
                 })
                  .catch(err => console.log(err));
@@ -167,7 +156,7 @@ router.post('/news/update/:id', (req, res) => {
 router.get('/news/delete/:id', (req, res) => {
     newsModel.findByIdAndRemove({_id: req.params.id})
     .then((data) => {
-        res.redirect('/news');
+        res.redirect('/home/news');
     })
     .catch(err => console.log(err));
 });
@@ -185,10 +174,9 @@ router.get('/getcatgories',(req, res) => {
 });
 
 
-router.get('/cats/getcatgories',(req, res) => {
+router.get('/homenewspage', ensureAuthenticated , (req, res) => {
     catsModel.find({}).sort({"name": 1}).populate('news_detail')
    .then((data) => {
-       //res.send(data);
       res.render('catscreate', { datas: data });
    })
    .catch(err => console.log(err));
@@ -210,8 +198,7 @@ router.post('/createcategories', (req, res) => {
     cat.save()
     .then((data) => {
         console.log(data);
-        //res.send(data);
-        res.redirect("/cats/getcatgories");
+        res.redirect("/home/homenewspage");
 
     })
     .catch(err => console.log(err));
@@ -222,7 +209,8 @@ router.post('/cats/createcatsnews/:id', async (req, res) => {
     
     let {id} = req.params;
     let form = new formidable.IncomingForm();
-    form.maxFieldsSize = 2 * 1024 ;
+    form.maxFieldsSize = 3 * 1024 * 1024;
+    form.keepExtensions = true;
     form.parse(req,async (err,fields,files)=>{
         const newPath = 'uploads/' + uuidv1() + files.image.name;
        mv(files.image.path,newPath,async(err)=>{
@@ -255,7 +243,6 @@ router.post('/cats/createcatsnews/:id', async (req, res) => {
 router.get('/cats/update/:id', (req, res) => {
     catsModel.findById({_id: req.params.id}, req.body)
     .then((data) => {
-        //console.log(data);
         res.render('catsupdate', {
             cats: data
         });
@@ -269,7 +256,7 @@ router.post('/cats/update/:id', (req, res) => {
     .then((data) => {
         console.log(data);
         //res.send(data);
-        res.redirect('/getcatgories');
+        res.redirect('/home/getcatgories');
     })
     .catch(err => console.log(err));  
 });
@@ -278,7 +265,7 @@ router.post('/cats/update/:id', (req, res) => {
 router.get('/cats/delete/:id', (req, res) => {
     catsModel.findByIdAndRemove({_id: req.params.id})
     .then(() => {
-        res.redirect('/getcatgories');
+        res.redirect('/home/homenewspage');
     })
     .catch(err => console.log(err));
 });

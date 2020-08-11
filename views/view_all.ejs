@@ -1,7 +1,8 @@
-<div class="container-fluid">
-<h3><a class="btn btn-success" href="/getnews"><i class="fa fa-plus"></i> Create News</a> </h3>
+<%- include ('header.ejs') %>
+<div class="container-fluid card mt-3">
+<h3><a class="btn btn-success" href="/home/getnews"><i class="fa fa-plus"></i> Create News</a> </h3>
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
             <th>Category Name</th>
             <th>Title</th>
@@ -20,13 +21,13 @@
                 <td><img class="responsive-img" src="/<%= data.image %>" width="150px" height="100px"></td>
                 <td><%= data.content.slice(0,100) %></td>
                 <td>
-                    <a href="/readme/<%= data._id %>" class="btn btn-success"><i class="fa fa-readme fa-sm text-white" aria-hidden="true"></i></a>
+                    <a href="/home/readme/<%= data._id %>" class="btn btn-success">Readmore</a>
                 </td>
                 <td>
-                    <a href="/news/update/<%= data._id %>" class="btn btn-primary"><i class="fa fa-pencil fa-sm" aria-hidden="true"></i></a>
+                    <a href="/home/news/update/<%= data._id %>" class="btn btn-primary">Edit</a>
                 </td>
                 <td>
-                    <a href="/news/delete/<%= data._id %>" class="btn btn-danger" onclick="return confirm('Are you sure to delete this record ?');"><i class="fa fa-trash fa-sm" aria-hidden="true"></i></a>
+                    <a href="/home/news/delete/<%= data._id %>" class="btn btn-danger" onclick="return confirm('Are you sure to delete this record ?');">Delete</a>
                 </td>
             </tr>
         <% }); %>        
