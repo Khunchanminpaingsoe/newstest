@@ -49,7 +49,7 @@ router.get('/news/createget/:id', async(req, res) => {
 
 
 router.get('/news', (req, res) => {
-        newsModel.find({}).sort({"title":-1}).populate('catname','name')
+        newsModel.find({}).sort({"time": -1}).populate('catname','name')
         .then((data) => {
            res.render('view_all', {
                 news: data
