@@ -2,7 +2,6 @@
     <h2>Edit News</h2>
     <br>
     <form action="/news/update/<%= data._id %>" method="POST" enctype="multipart/form-data"> 
-    
         <div class="form-group">
             <label for="title">Title</label>
             <input type="text" class="form-control" id="title" name="title" placeholder="Title" value="<%= data.title %>">
@@ -28,10 +27,8 @@
             <button type="submit" class="btn btn-success"><i class="fa fa-database"></i>Update</button>
             <a href="/home/news" class="btn btn-dark">Back</a>
         </div> 
-            
     </form>
-    
-    </div>
+</div>
     
     
     

@@ -71,17 +71,6 @@ router.get('/readme/:id', (req, res) => {
     });
 
 
-/*router.get('/news/createpost/:id', (req, res) => {
-        catsModel.findById({_id: req.params.id}, req.body)
-        .then((data) => {
-        
-            res.render('newscreate',{
-                datas: data
-            });
-        })
-        .catch(err => console.log(err));
-    })*/
-
 router.post('/news/createpost', async (req, res) => {
         let form = new formidable.IncomingForm();
         form.parse(req,async (err,fields,files)=>{
@@ -168,7 +157,6 @@ router.get('/getcatgories',(req, res) => {
      catsModel.find({}).sort({"name": 1}).populate('news_detail')
     .then((data) => {
         res.send(data);
-       //res.render('catscreate', { datas: data });
     })
     .catch(err => console.log(err));
 });
@@ -254,7 +242,7 @@ router.get('/cats/update/:id', (req, res) => {
 router.post('/cats/update/:id', (req, res) => {
     catsModel.findByIdAndUpdate({_id: req.params.id}, req.body)
     .then((data) => {
-        console.log(data);
+        //console.log(data);
         //res.send(data);
         res.redirect('/home/getcatgories');
     })
