@@ -131,7 +131,7 @@ router.post('/news/update/:id', (req, res) => {
                 }
                 newsModel.findByIdAndUpdate( id, bodys)
                 .then((data) => {
-                res.redirect('/news');
+                res.redirect('/home/news');
                 })
                  .catch(err => console.log(err));
                 }  
