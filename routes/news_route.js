@@ -39,7 +39,7 @@ router.get('/news/createget/:id', async(req, res) => {
         await newsModel.find({}).populate('catname')
         .then((all_data) => {
             let related_news = all_data.filter(item => {
-                return item._id.toString() !== data._id.toString()//&& item.catname.name == data.catname.name;
+                return item._id.toString() !== data._id.toString() && item.catname.name == data.catname.name;
             });
             res.send({news:data, relatedNews:related_news});
         })
